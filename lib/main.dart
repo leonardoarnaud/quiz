@@ -1,4 +1,10 @@
+
 import 'package:flutter/material.dart';
+
+import 'answer.dart';
+import 'questions.dart';
+import 'quiz.dart';
+import 'result.dart';
 
 void main() => runApp(const QuizApp());
 
@@ -27,17 +33,30 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
 
-  int number = 0;
+  int _position = 0;
 
-  final questions = [
-    'Qual sua cor favorita?',
-    'Qual animal você mais gosta?',
-    'Onde fica sua cidade?'
+  final List<Map<String, Object>> questions = [
+    {
+      'text': 'Qual sua cor favorita?',
+      'answers': ['Preto','Vermelho','Verde','Branco']
+    },
+    {
+      'text': 'Qual seu animal favorito?',
+      'answers': ['Coelho','Cobra', 'Elefante','Leão']
+    },
+    {
+      'text': 'Qual seu instrutor favorito?',
+      'answers': ['João','Leo', 'Maria','Pedro']
+    },
   ];
 
-  void respond({int q = 0}){
+  bool isQuizFinish(){
+    return _position >= questions.length;
+  }
+
+  void _sendAnswer(){
     setState(() {
-      number = q;
+      _position++;
     });
   }
 
@@ -47,25 +66,13 @@ class _HomeWidgetState extends State<HomeWidget> {
       appBar: AppBar(
           title: const Text('Olá mundo')
       ),
-      body: Column(
-        children: [
-          Text(questions[number]),
-          ElevatedButton(
-              onPressed: () => respond(q: 0) ,
-              child: const Text('Resposta 1')
+      body: isQuizFinish()
+        ? const Result()
+        : Quiz(
+            title: questions[_position]['text'].toString(),
+            questions: questions[_position]['answers'] as List<String>,
+            onSendAnswer: () => _sendAnswer(),
           ),
-          ElevatedButton(
-              onPressed: () => respond(q: 1) ,
-              child: const Text('Resposta 2')
-          ),
-          ElevatedButton(
-            onPressed: () => respond(q: 2) ,
-            child: const Text('Resposta 3'),
-          ),
-        ],
-      ),
     );
   }
 }
-
-
