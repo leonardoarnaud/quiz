@@ -34,19 +34,36 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
 
   int _position = 0;
+  int _score = 0;
 
   final List<Map<String, Object>> questions = [
     {
       'text': 'Qual sua cor favorita?',
-      'answers': ['Preto','Vermelho','Verde','Branco']
+      'answers': [
+        AnswerData(title: 'Preto', value: 1),
+        AnswerData(title: 'Vermelho', value: 0),
+        AnswerData(title: 'Verde', value: 0),
+        AnswerData(title: 'Brance', value: 0),
+      ],
+
     },
     {
       'text': 'Qual seu animal favorito?',
-      'answers': ['Coelho','Cobra', 'Elefante','Leão']
+      'answers': [
+        AnswerData(title: 'Coelho', value: 0),
+        AnswerData(title: 'Cobra', value: 1),
+        AnswerData(title: 'Elefant', value: 0),
+        AnswerData(title: 'Leão', value: 0),
+      ]
     },
     {
       'text': 'Qual seu instrutor favorito?',
-      'answers': ['João','Leo', 'Maria','Pedro']
+      'answers': [
+        AnswerData(title: 'João', value: 0),
+        AnswerData(title: 'Leo', value: 0),
+        AnswerData(title: 'Maria', value: 1),
+        AnswerData(title: 'Pedro', value: 0),
+      ]
     },
   ];
 
@@ -54,9 +71,17 @@ class _HomeWidgetState extends State<HomeWidget> {
     return _position >= questions.length;
   }
 
-  void _sendAnswer(){
+  void _restart(){
+    setState(() {
+      _position = 0;
+      _score = 0;
+    });
+  }
+
+  void _sendAnswer(bool correct){
     setState(() {
       _position++;
+      if (correct) _score++;
     });
   }
 
@@ -67,11 +92,14 @@ class _HomeWidgetState extends State<HomeWidget> {
           title: const Text('Olá mundo')
       ),
       body: isQuizFinish()
-        ? const Result()
+        ? Result(
+          score: _score,
+          onRestart: _restart,
+      )
         : Quiz(
             title: questions[_position]['text'].toString(),
-            questions: questions[_position]['answers'] as List<String>,
-            onSendAnswer: () => _sendAnswer(),
+            answers: questions[_position]['answers'] as List<AnswerData>,
+            onSendAnswer: (isCorrect) => _sendAnswer(isCorrect),
           ),
     );
   }

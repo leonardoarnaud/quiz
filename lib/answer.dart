@@ -26,3 +26,14 @@ class Answer extends StatelessWidget {
     );
   }
 }
+
+class AnswerData {
+
+  AnswerData({
+    required this.title,
+    required this.value
+  });
+
+  final String title;
+  final int value;
+}
